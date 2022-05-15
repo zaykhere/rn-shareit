@@ -6,7 +6,7 @@ import UserInput from "../components/auth/UserInput";
 import Button from "../components/Button";
 import CircleLogo from "../components/auth/CircleLogo";
 
-function Signin() {
+function Signin({navigation}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,14 +55,14 @@ function Signin() {
         />
 
         <Button
-          title="Sign Up"
+          title="Sign In"
           backgroundColor="#ff9900"
           handleSubmit={handleSubmit}
           loading={loading}
         />
         <CustomText small center>
           Not yet registered? 
-          <CustomText color="#ff2222">
+          <CustomText color="#ff2222" onPress={()=> navigation.navigate("Signup")}>
            Sign Up
           </CustomText>
         </CustomText>
