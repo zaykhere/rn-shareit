@@ -1,0 +1,1 @@
+export const API = "https://all-rocks-shake-175-107-212-30.loca.lt";

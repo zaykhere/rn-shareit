@@ -5,6 +5,7 @@ import CustomText from "../utils/CustomText";
 import UserInput from "../components/auth/UserInput";
 import Button from "../components/Button";
 import CircleLogo from "../components/auth/CircleLogo";
+import { API } from "../config";
 
 function Signup({navigation}) {
   const [name, setName] = useState("");
@@ -20,15 +21,22 @@ function Signup({navigation}) {
       return;
     }
     try {
-      const { data } = await axios.post("http://localhost:8000/api/signup", {
+      const { data } = await axios.post(`${API}/api/users/signup`, {
         name,
         email,
         password,
       });
+      if(data.error) {
+        alert(data.error);
+      }
+      else {
       console.log(data);
+      setLoading(false);
+      }
     } catch (error) {
       console.log(error);
       setLoading(false);
+      alert(error.response.data.error);
     }
   };
 

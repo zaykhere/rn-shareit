@@ -5,6 +5,8 @@ import CustomText from "../utils/CustomText";
 import UserInput from "../components/auth/UserInput";
 import Button from "../components/Button";
 import CircleLogo from "../components/auth/CircleLogo";
+import { API } from "../config";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Signin({navigation}) {
   const [email, setEmail] = useState("");
@@ -19,16 +21,34 @@ function Signin({navigation}) {
       return;
     }
     try {
-      const { data } = await axios.post("http://localhost:8000/api/signin", {
+      const { data } = await axios.post(`${API}/api/users/signin`, {
         email,
         password,
       });
-      console.log(data);
+      if(data.error) {
+        alert(data.error)
+      }
+      else {
+      //save response in async storage
+      
+      await AsyncStorage.setItem('@auth', JSON.stringify(data.token));
+
+      console.log(data.token);
+      setLoading(false);
+      }
     } catch (error) {
       console.log(error);
       setLoading(false);
+      alert(error.response.data.error);
     }
   };
+
+  const loadFromAsyncStorage = async () => {
+    let data = await AsyncStorage.getItem("@auth");
+    console.log("FROM ASYNC STORAGE", data);
+  }
+
+  loadFromAsyncStorage();
 
   return (
     <KeyboardAvoidingView
