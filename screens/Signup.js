@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Platform, ScrollView, KeyboardAvoidingView } from "react-native";
 import axios from "axios";
 import CustomText from "../utils/CustomText";
 import UserInput from "../components/auth/UserInput";
 import Button from "../components/Button";
 import CircleLogo from "../components/auth/CircleLogo";
-import { API } from "../config";
+import { AuthContext } from "../context/Auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Signup({navigation}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  //From Context
+  const [state, setState] = useContext(AuthContext);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -21,7 +25,7 @@ function Signup({navigation}) {
       return;
     }
     try {
-      const { data } = await axios.post(`${API}/api/users/signup`, {
+      const { data } = await axios.post(`/api/users/signup`, {
         name,
         email,
         password,
@@ -30,8 +34,12 @@ function Signup({navigation}) {
         alert(data.error);
       }
       else {
-      console.log(data);
+      setState(data);
+      //save response in async storage
+      await AsyncStorage.setItem('@auth', JSON.stringify(data));
+
       setLoading(false);
+      navigation.navigate("Home");
       }
     } catch (error) {
       console.log(error);
